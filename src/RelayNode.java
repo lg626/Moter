@@ -6,21 +6,21 @@ import com.ibm.saguaro.logger.*;
 /* @author : Y6329127 */
 public class RelayNode {
 
-	private static Timer  	tsync;	// timer responsible for syncing
- 	private static Timer  	tsend;	// timer responsinble for transmission 
- 	private static Timer  	trecv;	// timer responsinble for receiving from sources 
+    private static Timer  	tsync;	// timer responsible for syncing
+    private static Timer  	tsend;	// timer responsinble for transmission 
+    private static Timer  	trecv;	// timer responsinble for receiving from sources 
 
- 	private static byte[] 	xmit12;
-  	private static int 		breceived 	= 0; 			// beacon frames received
-  	private static long 	freceived 	= 0;			// time first beacon received
-  	private static int		nbeacons	= 0;			// number of syncing beacons
-  	private static long		period		= 0;			// period between 2 beacon frames
-  	private static boolean	stopreceive	= false;		// radio receiving has been stopped
-  	private static boolean	receivedfr	= false;		// check if received anything at the end of listen period
-  	private static int		currstate	= 1;			// current state of the relay mode
-  	private static long		listentime	= 0;			// period for listening
-  	private static int		nextchannel	= 0;			// next channel to be listened to
-  	private static int		framesgot	= 0;			// counter for the frames received
+    private static byte[] 	xmit12;
+    private static int 	breceived 	= 0; 		// beacon frames received
+    private static long freceived 	= 0;		// time first beacon received
+    private static int	nbeacons	= 0;		// number of syncing beacons
+    private static long	period		= 0;		// period between 2 beacon frames
+    private static boolean stopreceive	= false;	// radio receiving has been stopped
+    private static boolean receivedfr	= false;	// check if received anything at the end of listen period
+    private static int	currstate	= 1;		// current state of the relay mode
+    private static long	listentime	= 0;		// period for listening
+    private static int	nextchannel	= 0;		// next channel to be listened to
+    private static int	framesgot	= 0;		// counter for the frames received
   	
   	//States
     private static final int CALC_STATE	= 1; 			//Calculating period
@@ -29,36 +29,36 @@ public class RelayNode {
     
     //Relay Constants
     private static final long TTMAX 		= 3000; 	// maximum time for 2 frames
-    private static final long TMAX 			= 1500; 	// maximum time for 2 frames
-    private static final long TMIN 			= 500; 		// minimum t
+    private static final long TMAX 		= 1500; 	// maximum time for 2 frames
+    private static final long TMIN 		= 500; 		// minimum t
     private static final int  FRMS_RESYNC 	= 13; 		// frames between resyncs
     private static final int  PTCLLEN	 	= 11;		// Lenght of the protocol addressing
 
-	private static final byte panid 		= 0x11;
+    private static final byte panid 		= 0x11;
     private static final byte address 		= 0x10; 
        
     // Buffer Management
-	private static byte[] msgs 	= new byte[50];			//buffer for the messages
-	private static int nextsend = 0;					//pointer to the start of the next payload to be sent
-	private static int nextfree = 0;					//pointer to the start of the next free location.
+    private static byte[] msgs 	= new byte[50];			//buffer for the messages
+    private static int nextsend 	= 0;				//pointer to the start of the next payload to be sent
+    private static int nextfree 	= 0;				//pointer to the start of the next free location.
     
     // Channels
- 	private static final byte[] CHANNELS = new byte[] {0,1,2,3}; 		
-	private static final byte[] PANIDS 	 = new byte[] {0x11,0x12,0x13,0x14};
-	private static final byte[] ADDRSS 	 = new byte[] {0x11,0x12,0x13,0x14};  // In case addresses are different to panids   
+    private static final byte[] CHANNELS 	 = new byte[] {0,1,2,3}; 		
+    private static final byte[] PANIDS 	 = new byte[] {0x11,0x12,0x13,0x14};
+    private static final byte[] ADDRSS 	 = new byte[] {0x11,0x12,0x13,0x14};  // In case addresses are different to panids   
        
     //Indeces
     private static final int SINK 	= 0;
-	private static final int CHS1	= 1;
-	private static final int CHS2	= 2;
-	private static final int CHS3	= 3;
+    private static final int CHS1	= 1;
+    private static final int CHS2	= 2;
+    private static final int CHS3	= 3;
        
     private static Radio radio 	= new Radio();
     private static long wait 	= 0;
     
     //TEMPS
-    private static int		tempcl		= 0;
-    private static int		counter		= 1;			// counter for the frames
+    private static int	tempcl	= 0;
+    private static int	counter	= 1;			// counter for the frames
 
     //mote-create -n a; mote-create -n b; mote-create -n c; mote-create -n sink; mote-create -n relay; moma-load logger; 
     //a0 moma-load SO1; a1 moma-load SO2; a2 moma-load SO3; a3 moma-load Sink; a4 moma-load Relay;
@@ -252,10 +252,10 @@ public class RelayNode {
 		}
 	    return 0;
     }
-
-	/********************************************************************************************************************************************
- 	* Summary: Transmits to sink and schedules the next transmission 																			*							
- 	*********************************************************************************************************************************************/
+ 
+    /********************************************************************************************************************************************
+    * Summary: Transmits to sink and schedules the next transmission 																			*							
+    *********************************************************************************************************************************************/
     private static void Send(byte param, long time) 
     {
     	Scheduler.ScheduleTransmission();																		//Schedule next transmission and listen regardless of whether the relay sent anything
@@ -291,8 +291,8 @@ public class RelayNode {
     
     
     /********************************************************************************************************************************************
- 	* Summary: Callback for the tsync timer. Tries to establish the next syncing action  according to the state of the relay 					*									
- 	********************************************************************************************************************************************/
+    * Summary: Callback for the tsync timer. Tries to establish the next syncing action  according to the state of the relay 					*									
+    ********************************************************************************************************************************************/
     private static void SyncCheck(byte param, long time) 
     {	
     	switch(currstate)
@@ -310,48 +310,48 @@ public class RelayNode {
     	}
     }
     
-   	/********************************************************************************************************************************************
- 	* Summary: Callback of the trecv timer. Starts the receiving mode of the radio for listentime preset by the scheduler.						*
- 	*********************************************************************************************************************************************/
+    /********************************************************************************************************************************************
+    * Summary: Callback of the trecv timer. Starts the receiving mode of the radio for listentime preset by the scheduler.						*
+    *********************************************************************************************************************************************/
     private static void Listen(byte param, long time) 
     {
     	ChangeChannel(nextchannel);											
     	radio.startRx(Device.ASAP, 0, Time.currentTicks() + listentime);
     }
     
-   	/********************************************************************************************************************************************
- 	* Summary: Stops the radio if it is not in stand by or is already stopped.  																*
- 	*********************************************************************************************************************************************/
+    /********************************************************************************************************************************************
+    * Summary: Stops the radio if it is not in stand by or is already stopped.  																*
+    *********************************************************************************************************************************************/
     public static void StopListening()
     {
     	radio.setState(Device.S_OFF);
     }
 	
-	/********************************************************************************************************************************************
- 	* Summary: Changes channel iff not already changed. Takes entity index as parameter.  														*
- 	*-------------------------------------------------------------------------------------------------------------------------------------------*
- 	* @param 																																	*
- 	* ch -> channel index																													    *
- 	*********************************************************************************************************************************************/
-	public static void ChangeChannel(int ch)
+    /********************************************************************************************************************************************
+    * Summary: Changes channel iff not already changed. Takes entity index as parameter.  														*
+    *-------------------------------------------------------------------------------------------------------------------------------------------*
+    * @param 																																	*
+    * ch -> channel index																													    *
+    *********************************************************************************************************************************************/
+    public static void ChangeChannel(int ch)
+    {
+	if(radio.getChannel() != CHANNELS[ch])
 	{
-		if(radio.getChannel() != CHANNELS[ch])
-		{
-			StopListening();
-			stopreceive = false;
+		StopListening();
+		stopreceive = false;
 			
-			radio.setChannel(CHANNELS[ch]);
-			radio.setPanId(PANIDS[ch],true);
-		}
+		radio.setChannel(CHANNELS[ch]);
+		radio.setPanId(PANIDS[ch],true);
 	}
+    }
+
     
-    
-   	/********************************************************************************************************************************************
- 	* Summary: Returns timer entity according to the passed timer index. Invoked by scheduler to set alarms on timers. 							*
- 	*-------------------------------------------------------------------------------------------------------------------------------------------*
- 	*@param																																		*
- 	* timer -> timer index																														*
- 	*********************************************************************************************************************************************/
+   /********************************************************************************************************************************************
+   * Summary: Returns timer entity according to the passed timer index. Invoked by scheduler to set alarms on timers. 							*
+   *-------------------------------------------------------------------------------------------------------------------------------------------*
+   *@param																																		*
+   * timer -> timer index																														*
+   *********************************************************************************************************************************************/
     public static Timer GetTimer(int timer)
     {
     	if(timer == 1) 		return tsend;
@@ -360,49 +360,49 @@ public class RelayNode {
     }
     
     /********************************************************************************************************************************************
- 	* Summary: Returns the current state of the relay. 																							*
- 	*********************************************************************************************************************************************/
-	public static int GetState()
-	{
-		return currstate;
-	}
+    * Summary: Returns the current state of the relay. 																							*
+    *********************************************************************************************************************************************/
+    public static int GetState()
+    {
+	return currstate;
+    }
 	
-	/********************************************************************************************************************************************
- 	* Summary: Setter for the state. Invoked by the scheduler to change the state of the relay. 												*
- 	*-------------------------------------------------------------------------------------------------------------------------------------------*
- 	*@param																																		*
- 	* newstate -> index of the new state -> indeces to state mapping is specified in the beginning												*
- 	*********************************************************************************************************************************************/
-	public static void ChangeState(int newstate)
-	{
-		if(currstate> 0 && currstate < 4) currstate = newstate;
-	}
+    /********************************************************************************************************************************************
+    * Summary: Setter for the state. Invoked by the scheduler to change the state of the relay. 												*
+    *-------------------------------------------------------------------------------------------------------------------------------------------*
+    * @param																																		*
+    * newstate -> index of the new state -> indeces to state mapping is specified in the beginning												*
+    *********************************************************************************************************************************************/
+    public static void ChangeState(int newstate)
+    {
+	if(currstate> 0 && currstate < 4) currstate = newstate;
+    }
 	
-	/***********************************************************************************************************************************************
- 	* Summary: Setter for variable listen time used by Listen()-the callback for trecv timer. Invoked by the scheduler to preset the listen period.*
- 	*----------------------------------------------------------------------------------------------------------------------------------------------*
- 	*@param 																																	   *
- 	* time -> value for the listen time																											   *
- 	************************************************************************************************************************************************/
+    /***********************************************************************************************************************************************
+    * Summary: Setter for variable listen time used by Listen()-the callback for trecv timer. Invoked by the scheduler to preset the listen period.*
+    *----------------------------------------------------------------------------------------------------------------------------------------------*
+    *@param 																																	   *
+    * time -> value for the listen time																											   *
+    ************************************************************************************************************************************************/
     public static void ChangeListenTime(long time)
     {
     	if(time > 0) listentime = time;
     }
     
     /***********************************************************************************************************************************************
- 	* Summary: Setter for next source channel to be listened to.Used by the scheduler to assign next channel to be serviced.					   *
- 	*----------------------------------------------------------------------------------------------------------------------------------------------*
- 	*@param 																																	   *
- 	* channel -> index of the next channel																										   *
- 	************************************************************************************************************************************************/
+    * Summary: Setter for next source channel to be listened to.Used by the scheduler to assign next channel to be serviced.					   *
+    *----------------------------------------------------------------------------------------------------------------------------------------------*
+    *@param 																																	   *
+    * channel -> index of the next channel																										   *
+    ************************************************************************************************************************************************/
     public static void ChangeListenChannel(int channel)
     {
     	nextchannel = channel;
     }
     
     /***********************************************************************************************************************************************
- 	* Summary: Prepares a frame by loading in the protocol addressings.																			   *
- 	************************************************************************************************************************************************/
+    * Summary: Prepares a frame by loading in the protocol addressings.																			   *
+    ************************************************************************************************************************************************/
     public static void PrepareFrame()
     {
     	// Prepare beacon frame with source and destination addressing
@@ -423,9 +423,9 @@ public class RelayNode {
     	Logger.flush(Mote.WARN);
     }
     
-     /***********************************************************************************************************************************************
- 	* Summary: Handling method for the case of first beacon's payload == 1				   															*
- 	************************************************************************************************************************************************/
+    /***********************************************************************************************************************************************
+    * Summary: Handling method for the case of first beacon's payload == 1				   															*
+    ************************************************************************************************************************************************/
     public static void HandleGettingLastBeacon()
     {
     	ChangeChannel(CHS1);																//Stop listening to beacons and start listening for packets
@@ -437,8 +437,8 @@ public class RelayNode {
     }
     
     /***********************************************************************************************************************************************
- 	* Summary: Getter for the non relayed frames in the buffer					   																   *
- 	************************************************************************************************************************************************/
+    * Summary: Getter for the non relayed frames in the buffer					   																   *
+    ************************************************************************************************************************************************/
     public static int GetNonRelayedFrames()
     {
     	return framesgot;
